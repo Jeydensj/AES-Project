@@ -1,20 +1,13 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
 
+import java.util.Scanner;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HexFormat;
-import java.util.Scanner;
+public class Main {
+    public static void main(String[] args) {
 
-final class Main {
-    Main() {
-    }
-
-    void main() {
         Scanner sc = new Scanner(System.in);
 
         System.out.println("Copy and paste your file path");
@@ -49,6 +42,5 @@ final class Main {
             IOException e = var7;
             System.out.println(e.getMessage());
         }
-
     }
 }
