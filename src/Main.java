@@ -1,6 +1,8 @@
+
 import java.util.Scanner;
+
 public class Main {
-    public static void main(String[] args){
+    public static void main(String[] args) {
 
 
         Scanner sc = new Scanner(System.in);
@@ -13,19 +15,18 @@ public class Main {
         int[][] output1 = Substitution.substitute_math(test1, true);
         int[][] output2 = Substitution.substitute_table(test1, true);
 
-        for(int[] row: output1){
-            for(int b :row){
+        for (int[] row : output1) {
+            for (int b : row) {
                 System.out.print(Integer.toHexString(b) + ", ");
             }
             System.out.println();
         }
         System.out.println();
-        for(int[] row: output2){
-            for(int b :row){
+        for (int[] row : output2) {
+            for (int b : row) {
                 System.out.print(Integer.toHexString(b) + ", ");
             }
             System.out.println();
         }
     }
-
 }
