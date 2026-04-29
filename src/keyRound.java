@@ -10,37 +10,18 @@ public class keyRound {
             {0,0,0,0,0,0,0,0,0,0}
     };
     public keyRound(byte[] keyArray){ // Object takes given key
-        this.keyArray=into2DArray(keyArray);
+        keySchedule(keyArray);
     }
 
-    public byte[][] into2DArray(byte[] key){
-        byte[][] key2D = new byte[4][4];
+    public void into2DArray(byte[] key){
         for(int i=0;i<key.length;i++){
-            int col= i/4; //AES is column-major, so first fill the cols
-            int row= i%4;
-            key2D[row][col]=key[i];
-        }
-        return key2D;
-    }
-    /*public List<byte[]> getWord(byte[][] key2D){ // key --> from 2D to 4-Words
-        List<byte[]> words = new ArrayList<>();
-
-        for(int c=0;c<key2D[0].length;c++){
-            byte[] word = new byte[4];
-            for(int r=0;r<key2D.length;r++){
-                word[r]=key2D[r][c];
-            }
-            words.add(word); // each word is stored in List of "words" as 1D-byte arrays
-        }
-        return words; // it returns the words as list of byte arrays,
-        // in order to access directly to the specific word, use "words.get(0,...,3)"
-    } */
-    public void keySchedule(byte[] key){
-        for(int i=0;i<key.length;i++){ // FIRST, key --> from 1D to 2D array
             int col= i/4; //AES is column-major, so first fill the cols
             int row= i%4;
             keyArray[row][col]=key[i];
         }
+    }
+    public void keySchedule(byte[] key){
+        into2DArray(key); // FIRST, key --> from 1D to 2D array
 
         for(int i=4;i<44;i++){ // SECOND, now generating rest of the columns
             byte[] temp=new byte[4]; // representing Wi-1
