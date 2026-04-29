@@ -1,11 +1,12 @@
+
+import java.util.Scanner;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HexFormat;
-import java.util.Scanner;
-
 public class Main {
+
     public static void main(String[] args){
         Scanner sc = new Scanner(System.in);
         System.out.println("Copy and paste your file path:");
@@ -23,6 +24,6 @@ public class Main {
         } catch (IOException e) {
             System.out.println("Could not read the file. Check the path!");
         }
-    }
 
+    }
 }
