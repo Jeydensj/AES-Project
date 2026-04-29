@@ -1,6 +1,6 @@
 public class Substitution {
 
-    public static final byte[][] S_Box =
+    public static final int[][] S_Box =
 
     {
         {
@@ -51,22 +51,22 @@ public class Substitution {
         {
             0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16
         }
-    }
+    };
 
-    public static final byte[][] Inverse_S_Box =
+    public static final int[][] Inverse_S_Box =
 
     {
         {
             0x52, 0x09, 0x6a, 0xd5, 0x30, 0x36, 0xa5, 0x38, 0xbf, 0x40, 0xa3, 0x9e, 0x81, 0xf3, 0xd7, 0xfb
-        }
+        },
         {
             0x7c, 0xe3, 0x39, 0x82, 0x9b, 0x2f, 0xff, 0x87, 0x34, 0x8e, 0x43, 0x44, 0xc4, 0xde, 0xe9, 0xcb
         },
         {
             0x54, 0x7b, 0x94, 0x32, 0xa6, 0xc2, 0x23, 0x3d, 0xee, 0x4c, 0x95, 0x0b, 0x42, 0xfa, 0xc3, 0x4e
-        }.
+        },
         {
-            0x08, 0x2e. 0xa1. 0x66. 0x28, 0xd9, 0x24, 0xb2, 0x76, 0x5b, 0xa2, 0x49, 0x6d, 0x8b, 0xd1, 0x25
+            0x08, 0x2e, 0xa1, 0x66, 0x28, 0xd9, 0x24, 0xb2, 0x76, 0x5b, 0xa2, 0x49, 0x6d, 0x8b, 0xd1, 0x25
         },
         {
             0x72, 0xf8, 0xf6, 0x64, 0x86, 0x68, 0x98, 0x16, 0xd4, 0xa4, 0x5c, 0xcc, 0x5d, 0x65, 0xb6, 0x92
@@ -104,25 +104,128 @@ public class Substitution {
         {
             0x17, 0x2b, 0x04, 0x7e, 0xba, 0x77, 0xd6, 0x26, 0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d
         },
-    }
+    };
 
-    public byte[][] substitute(byte[][] input_table, boolean encrypt) {
+    public static int[][] substitute_table(int[][] input_table, boolean encrypt) {
         //adding a true or false check to know if you are encrypting or decrypting
         // respective sbox is selected based on whether you want to encrypt or decrypt.
-        byte[][] sbox = S_Box;
+        int[][] sbox = S_Box;
         if(!encrypt){
             sbox = Inverse_S_Box;
         }
         //build 4x4 output that will contain substituted values
-        byte[][] output_table = new byte[4][4];
+        int[][] output_table = new int[4][4];
        //populating
-        for(short i = 0; i<input_table.length; i++){
-            for(short j = 0; j<input_table[i].length; j++){
+        for(int i = 0; i<input_table.length; i++){
+            for(int j = 0; j<input_table[i].length; j++){
                 //output values get populated using the first hex value for row and second hex value for column
                 // &ing with 0x0F gives only the Least Significant 4 bits. We use that for column, and move leftmost 4 bits to the right to do the same for rows.
-                output_table[i][j] = sbox[input_table[i][j]>>4 & 0x0F][input_table[i][j] & 0x0F]
+                output_table[i][j] = sbox[input_table[i][j]>>4 & 0x0F][input_table[i][j] & 0x0F];
             }
         }
         return output_table;
     }
+    public static int gfMultiply(int a, int b) {
+        int p = 0;
+        for (int i = 0; i < 8; i++) {
+            if ((b & 1) != 0) {
+                p ^= a;
+            }
+            boolean hiBitSet = (a & 0x80) != 0;
+            a <<= 1;
+            if (hiBitSet) {
+                a ^= 0x11B; // AES irreducible polynomial
+            }
+            b >>= 1;
+        }
+        return p & 0xFF;
+    }
+    public static int mod_inverse(int n) {
+        if (n == 0) return 0;
+        int result = 1;
+        for (int i = 0; i < 254; i++) {
+            result = gfMultiply(result, n);
+        }
+        return result;
+    }
+    public static int affine_transformation(int b) {
+        int x = b;
+        int s = b;
+        for (int i = 1; i < 5; i++) {
+            // Circular shift left and XOR
+            s ^= ((x << i) | (x >> (8 - i))) & 0xFF;
+        }
+        return s ^ 0x63; // XOR with constant 0x63
+    }
+    public static int inv_affine_transformation(int s) {
+        int x = s;
+        // The inverse constant is 0x05 (or 0x63's inverse under the map)
+        // The inverse mapping is: y = (s >> 1) ^ (s >> 3) ^ (s >> 6) ^ 0x05
+        // But it's easier to implement via circular shifts:
+        int b = ((x << 1) | (x >> 7)) & 0xFF; // circular shift 1
+        int c = ((x << 3) | (x >> 5)) & 0xFF; // circular shift 3
+        int d = ((x << 6) | (x >> 2)) & 0xFF; // circular shift 6
+
+        return b ^ c ^ d ^ 0x05;
+    }
+
+    public static int extended_euclidean_algorithm(int a){
+        int b = 0x11B;
+
+        int x0 = 1, x1 = 0;
+        int y0 = 0, y1 = 1;
+        int r0 = a, r1 = b;
+
+        while (r1 != 0){
+            int q = r0/r1;
+            int temp = r1;
+            r1 = r0 % r1;
+            r0 = temp;
+
+            int tempX = x1;
+            x1 = x0 - q * x1;
+            x0 = tempX;
+
+            int tempY = y1;
+            y1 = y0 - q * y1;
+            y0 = tempY;
+        }
+        return (x0 + b) % b;
+    }
+    public static int[][] substitute_math(int[][] input_table, boolean encrypt){
+        int[][] mod_inverse_table = new int[4][4];
+        int[][] output_table = new int[4][4];
+        if (encrypt){
+        for (int i = 0; i< input_table.length; i++){
+            for (int j = 0; j<input_table.length; j++){
+                mod_inverse_table[i][j] = mod_inverse(input_table[i][j]);
+                System.out.print(Integer.toHexString(mod_inverse_table[i][j]) + ", ");
+            }
+        }
+
+
+            for (int i = 0; i < input_table.length; i++) {
+                for (int j = 0; j < input_table[i].length; j++) {
+                    output_table[i][j] = affine_transformation(mod_inverse_table[i][j]);
+                }
+                System.out.println();
+            }
+            System.out.println();
+        }
+        else{
+            for (int i = 0; i < input_table.length; i++) {
+                for (int j = 0; j < input_table[i].length; j++) {
+                    mod_inverse_table[i][j] = inv_affine_transformation(input_table[i][j]);
+                }
+                for (int j = 0; j<input_table.length; j++){
+                    output_table[i][j] = mod_inverse(mod_inverse_table[i][j]);
+                    System.out.print(Integer.toHexString(mod_inverse_table[i][j]) + ", ");
+                }
+                System.out.println();
+            }
+        }
+
+        return output_table;
+    }
+
 }
