@@ -48,7 +48,6 @@ public class MixColumns {
                 }
             }
             return sPrimeBox;
-        }
     }
 
     public byte[][] inverseMixingColumns(byte[][] shiftRowsTable){
@@ -64,5 +63,4 @@ public class MixColumns {
         }
         return inverseSPrimeBox;
     }
-
 }
