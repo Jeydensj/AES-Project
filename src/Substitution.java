@@ -244,4 +244,13 @@ public class Substitution {
         return output_table;
     }
 
+    //for substituting byte by byte
+    public static byte substitute_bytr(byte input_byte, boolean encrypt){
+        if (encrypt){
+            return affine_transformation(mod_inverse(input_byte));
+        }
+        return mod_inverse(inv_affine_transformation(input_byte));
+
+    }
+
 }
