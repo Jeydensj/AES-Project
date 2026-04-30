@@ -1,9 +1,9 @@
 import java.util.Scanner;
 
-public class test{
+public class test {
     public static void main(String[] args) {
-
-
+        ShiftRows sr = new ShiftRows();
+        MixColumns mc = new MixColumns();
         Scanner sc = new Scanner(System.in);
         byte[][] test1 = {
                 {0x00, 0x00, 0x01, 0x01},
@@ -13,6 +13,8 @@ public class test{
         };
         byte[][] output1 = Substitution.substitute_math(test1, true);
         byte[][] output2 = Substitution.substitute_table(test1, true);
+        //byte[][] output1 = mc.inverseMixingColumns(test1);
+        //int[][] output2 = Substitution.substitute_table(test1, true);
 
         for (byte[] row : output1) {
             for (int b : row) {
@@ -22,7 +24,7 @@ public class test{
         }
         System.out.println();
         for (byte[] row : output2) {
-            for (int b : row) {
+            for (byte b : row) {
                 System.out.print(Integer.toHexString(b) + ", ");
             }
             System.out.println();

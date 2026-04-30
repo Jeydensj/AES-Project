@@ -44,7 +44,7 @@ public class MixColumns {
                     for (int k = 0; k < mBoxRow; k++) {
                         num ^= gfMultiply(mBox[j][k], shiftRowsTable[k][i]);
                     }
-                    sPrimeBox[i][j] = num;
+                    sPrimeBox[j][i] = num;
                 }
             }
             return sPrimeBox;
@@ -58,7 +58,7 @@ public class MixColumns {
                 for (int k = 0; k<4;k++) {
                     num ^= gfMultiply(inverseMBox[j][k], shiftRowsTable[k][i]);
                 }
-                inverseSPrimeBox[i][j] = num;
+                inverseSPrimeBox[j][i] = num;
             }
         }
         return inverseSPrimeBox;
