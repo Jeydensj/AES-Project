@@ -1,6 +1,6 @@
 
 public class ShiftRows {
-    public byte[][] shiftingRows(byte[][] sBoxTable, boolean encrypt) {
+    public byte[][] shiftingRows(byte[][] sBoxTable) {
         byte[][] temp = new byte[4][4];
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
@@ -11,7 +11,7 @@ public class ShiftRows {
         return temp;
     }
 
-    public byte[][] inverseShiftingRows(byte[][] sBoxTable, boolean encrypt) {
+    public byte[][] inverseShiftingRows(byte[][] sBoxTable) {
         byte[][] temp = new byte[4][4];
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {

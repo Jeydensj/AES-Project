@@ -33,20 +33,22 @@ public class MixColumns {
     }
 
     public byte[][] mixingColumns(byte[][] shiftRowsTable){
-        byte[][] sPrimeBox = new byte[4][4];
-        int SRTrow = 4;
-        int mBoxRow = 4;
-        int mBoxCol = 4;
-        for(int i = 0;i<SRTrow;i++){
-            for(int j =0; j<mBoxCol;j++){
-                byte num = 0;
-                for (int k = 0; k<mBoxRow;k++) {
-                    num ^= gfMultiply(mBox[j][k], shiftRowsTable[k][i]);
+
+            byte[][] sPrimeBox = new byte[4][4];
+            int SRTrow = 4;
+            int mBoxRow = 4;
+            int mBoxCol = 4;
+            for (int i = 0; i < SRTrow; i++) {
+                for (int j = 0; j < mBoxCol; j++) {
+                    byte num = 0;
+                    for (int k = 0; k < mBoxRow; k++) {
+                        num ^= gfMultiply(mBox[j][k], shiftRowsTable[k][i]);
+                    }
+                    sPrimeBox[i][j] = num;
                 }
-                sPrimeBox[i][j] = num;
             }
+            return sPrimeBox;
         }
-        return sPrimeBox;
     }
 
     public byte[][] inverseMixingColumns(byte[][] shiftRowsTable){
