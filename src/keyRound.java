@@ -2,8 +2,8 @@ import java.util.List;
 import java.util.ArrayList;
 public class keyRound {
 
-    byte[][] keyArray= new byte[4][44];
-    byte[][] Rcon = {
+    protected byte[][] keyArray= new byte[4][44];
+    protected byte[][] Rcon = {
             {(byte)0x01,(byte)0x02,(byte)0x04,(byte)0x08,(byte)0x10,(byte)0x20,(byte)0x40,(byte)0x80,(byte)0x1B,(byte)0x36},
             {0,0,0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,0,0,0,0},
@@ -13,16 +13,22 @@ public class keyRound {
         keySchedule(keyArray);
     }
 
-    public void into2DArray(byte[] key){
+    public static byte[][] into2DArray(byte[] key){
+        byte[][] arr= new byte[4][4];
         for(int i=0;i<key.length;i++){
             int col= i/4; //AES is column-major, so first fill the cols
             int row= i%4;
-            keyArray[row][col]=key[i];
+            arr[row][col]=key[i];
         }
+        return arr;
     }
     public void keySchedule(byte[] key){
-        into2DArray(key); // FIRST, key --> from 1D to 2D array
-
+        byte[][] init = into2DArray(key); // FIRST, key --> from 1D to 2D array
+        for(int i=0;i<init.length;i++){
+            for(int j=0;j<init[0].length;j++){
+                keyArray[i][j]=init[i][j];
+            }
+        }
         for(int i=4;i<44;i++){ // SECOND, now generating rest of the columns
             byte[] temp=new byte[4]; // representing Wi-1
 
