@@ -159,7 +159,7 @@ public class Substitution {
             for(int j = 0; j<input_table[i].length; j++){
                 //output values get populated using the first hex value for row and second hex value for column
                 // &ing with 0x0F gives only the Least Significant 4 bits. We use that for column, and move leftmost 4 bits to the right to do the same for rows.
-                output_table[i][j] = sbox[input_table[i][j]>>4 & 0x0F][input_table[i][j] & 0x0F];
+                output_table[i][j] = sbox[input_table[i][j]&0xFF>>>4 & 0x0F][input_table[i][j]&0XFF & 0x0F];
             }
         }
         return output_table;
